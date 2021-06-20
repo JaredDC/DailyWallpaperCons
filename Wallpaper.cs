@@ -4,7 +4,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Text.RegularExpressions;
 
-public static class Wallpaper
+public class Wallpaper
 {
     const int SPI_SETDESKWALLPAPER = 20;
     const int SPIF_UPDATEINIFILE = 0x01;
@@ -24,7 +24,7 @@ public static class Wallpaper
         Center
     }
     
-    public static int GetHanNumFromString(string str)
+    private static int GetHanNumFromString(string str)
     {
         int count = 0;
         Regex regex = new Regex(@"^[\u4E00-\u9FA5]{0,}$");
@@ -39,7 +39,7 @@ public static class Wallpaper
 
         return count;
     }
-public static void AddWaterMark(string sourceFile, string destFile, string waterMark)
+    public static void AddWaterMark(string sourceFile, string destFile, string waterMark)
     {
         System.Drawing.Image bitmap = (System.Drawing.Image)Bitmap.FromFile(sourceFile); // set image     
         // Font font = new Font("Microsoft YaHei", 20, FontStyle.Regular, GraphicsUnit.Pixel);
