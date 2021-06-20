@@ -1,3 +1,10 @@
+# SOMEFILES
+*.jpg
+.vs/
+bin/
+obj/
+packages/
+
 # Prerequisites
 *.d
 
