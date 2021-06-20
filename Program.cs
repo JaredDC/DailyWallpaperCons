@@ -15,6 +15,10 @@ namespace wallpaper_today
             Wallpaper.AddWaterMark("C:\\Users\\jared\\Pictures\\photo_of_the_day\\黑沙滩上Reynisdrangar的玄武岩_冰岛_Cavan_Images_Getty_Images_watermark.jpg",
                 "D:\\jared\\coding\\wallpaper_today\\watermark.jpg",
                 "黑沙滩上Reynisdrangar的玄武岩,冰岛@Cavan Images Getty Images");
+            new LocalImage(@"C:\Users\jared\Pictures\新建文件夹").ScanLocalPath();
+            new LocalImage(@"C:\Users\jared\Pictures\新建文件夹").List2Txt();
+            //new LocalImage("C:\\Users\\jared\\Pictures\\photo_of_the_day").ScanLocalPath();
+            //new LocalImage("D:\\jared\\Videos\\movies\\seen").ScanLocalPath();
         }
 
     }
