@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Reflection;
 using System.IO;
 
-namespace wallpaper_today
+namespace DailyWallpaper
 {
     class ConfigIni
     {
@@ -23,7 +23,7 @@ namespace wallpaper_today
 
         public ConfigIni(string IniPath = null)
         {
-            iniPath = new FileInfo(IniPath ?? exeName+".config.ini").FullName;
+            iniPath = new FileInfo(IniPath ?? "config.ini").FullName;
             if (!File.Exists(iniPath))
             {
                 CreateDefIni();
@@ -62,7 +62,7 @@ namespace wallpaper_today
             Write("useLocal", "yes", exeName);
             Write("useOnline", "no", exeName);
             Write("createUsageStat", "once", exeName);
-            Write("want2AutoRun", "no", exeName);
+            Write("want2AutoRun", "once", exeName);
 
             Write("ngChina", "no", "Online");
             Write("bingChina", "yes", "Online");
@@ -80,5 +80,79 @@ namespace wallpaper_today
             Write("lastImgDir", "NULL", "Local");
             Write("wallpaper", "NULL", "Local");
         }
+        public void RunAtStartup()
+        {
+            // ConfigIni iniFile
+            string want2AutoRun = Read("want2AutoRun").ToLower();
+            if (want2AutoRun.Equals("yes") || want2AutoRun.Equals("once"))
+            {
+                AutoStartupHelper.CreateAutorunShortcut();
+                if (want2AutoRun.Equals("once")){
+                    Write("want2AutoRun", "yes/no");
+                }
+            } else if(want2AutoRun.Equals("no"))
+            {
+                if (!AutoStartupHelper.IsAutorun())
+                {
+                    return;
+                }
+                Console.WriteLine("You don't want this program run at Windows startup.");
+                AutoStartupHelper.RemoveAutorunShortcut();
+            }
+        }
+        private void PrintDict(Dictionary<string, string> dict)
+        {
+            foreach (string key in dict.Keys)
+            {
+                Console.WriteLine($"{key}: {dict[key]}");
+            }
+        }
+        
+        public void UpdateIniVolatileItem(string mTime=null,string lastImgDir=null, string wallpaper=null)
+        {
+            if (!String.IsNullOrEmpty(mTime))
+            {
+                Write("mTime", mTime, "Local");
+                Console.WriteLine($"update \"mTime\" -> \" {mTime} \"");
+            }
+                
+            if (!String.IsNullOrEmpty(lastImgDir)) {
+                Write("lastImgDir", lastImgDir, "Local");
+                Console.WriteLine($"update \"lastImgDir\" -> \" {lastImgDir} \"");
+            }
+                
+            if (!String.IsNullOrEmpty(wallpaper)) {
+                Write("wallpaper", wallpaper, "Local");
+                Console.WriteLine($"update \"wallpaper\" -> \" {wallpaper} \"");
+            }
+                
+        }
+        
+        public Dictionary<string, string> GetCfgFromIni()
+        {
+            Dictionary<string, string> iniDict = new Dictionary<string, string>();
+            
+            // master
+            iniDict.Add("useLocal", Read("useLocal", exeName));
+            iniDict.Add("useOnline", Read("useOnline", exeName));
+            iniDict.Add("createUsageStat", Read("createUsageStat", exeName));
+            iniDict.Add("want2AutoRun", Read("want2AutoRun", exeName));
+
+            // online
+            iniDict.Add("ngChina", Read("ngChina", "Online"));
+            iniDict.Add("bingChina", Read("bingChina", "Online"));
+            iniDict.Add("dailyDpotlight", Read("dailyDpotlight", "Online"));
+            iniDict.Add("alwaysdlBingWallpaper", Read("alwaysdlBingWallpaper", "Online"));
+            
+            iniDict.Add("imgDir", Read("imgDir", "Local"));
+            iniDict.Add("scan", Read("scan", "Local"));
+            iniDict.Add("copyFolder", Read("copyFolder", "Local"));
+            iniDict.Add("want2Copy", Read("want2Copy", "Local"));
+            
+            // print
+            // PrintDict(iniDict);
+            return iniDict;
+        }
+
     }
 }
