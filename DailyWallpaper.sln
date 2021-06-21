@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31402.337
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallpaper_today", "wallpaper_today.csproj", "{5C8F8F8C-C9C1-4A11-BA57-3DAA9415D24C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyWallpaper", "DailyWallpaper.csproj", "{5C8F8F8C-C9C1-4A11-BA57-3DAA9415D24C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
