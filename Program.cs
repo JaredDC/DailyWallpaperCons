@@ -11,6 +11,7 @@ namespace wallpaper_today
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
             try
             {
                 using (var writer = new StreamWriter("log.txt"))
@@ -47,6 +48,8 @@ namespace wallpaper_today
 
         }
 
+        /*TODO*/
+        // generate single file excutable
         private static bool DailyWallpaper()
         {
             // Wallpaper.SetWallPaper("C:\\Users\\jared\\Pictures\\pic\\61e030ca5106db3731eb1058432c6bbb7b4b5d3efbfe63001fbd56d9ae288daf.jpg");
@@ -54,10 +57,15 @@ namespace wallpaper_today
                 "D:\\jared\\coding\\wallpaper_today\\watermark.jpg",
                 "黑沙滩上Reynisdrangar的玄武岩,冰岛@Cavan Images Getty Images");
             //new LocalImage(@"C:\Users\jared\Pictures\新建文件夹").ScanLocalPath();
-            new LocalImage(@"C:\Users\jared\Pictures\新建文件夹").ShoulditUpdate();
+            var localImage = new LocalImage(@"C:\Users\jared\Pictures\新建文件夹");
+            // localImage.RandomSelectOneImgToWallpaper();
             //new LocalImage("C:\\Users\\jared\\Pictures\\photo_of_the_day").ScanLocalPath();
             //new LocalImage("D:\\jared\\Videos\\movies\\seen").ScanLocalPath();
             // Creating a text file named "out" in D Drive
+            var MyIni = new ConfigIni();
+            MyIni.CreateDefIni();
+
+            
 
             return true;
         }

@@ -16,24 +16,39 @@ public class LocalImage
 		FORCE,
 		CleanInvalid
 	}
-	private Update update = LocalImage.Update.NO;
+	private Update update = LocalImage.Update.YES;
 	public LocalImage(string path)
 	{
 		this.path = path;
 	}
-	public bool ShoulditUpdate(string path="")
+	private bool ShoulditUpdate()
     {
-		if (path.Length < 1)
+		if (this.update == Update.FORCE)
+        {
+			return true;
+        } else if (this.update == Update.CleanInvalid)
 		{
-			path = this.path;
+			return true;
+		} else if (this.update == Update.NO)
+		{
+			return false;
+		} else
+        {
+			Console.WriteLine(new FileInfo(this.path).LastWriteTime);
+			return true;
 		}
-
-		Console.WriteLine(new FileInfo(path).LastWriteTime);
-		return true;
     }
 
 	public void ScanLocalPath(string path="", bool print=true)
     {
+		if (!ShoulditUpdate()) {
+			return;
+		}
+		if (this.update == Update.CleanInvalid) {
+			List2Txt();
+			return;
+		}
+
 		if (path.Length < 1) {
 			path = this.path;
 		}
@@ -120,7 +135,7 @@ public class LocalImage
 			if (this.invalidCnt != 0)
             {
 				this.update = Update.CleanInvalid;
-				List2Txt();
+				ScanLocalPath();
 			}
 			this.files = effectivefiles;
 		}
@@ -133,5 +148,25 @@ public class LocalImage
 				Console.WriteLine(s);
 			}*/
         }
+	}
+	private void PrintList()
+    {
+		foreach (string file in this.files)
+        {
+			Console.WriteLine(file);
+        }
+    }
+	private string RandomChoiceFromList()
+    {
+		ScanLocalPath();
+		var random = new Random();
+		// PrintList();
+		int index = random.Next(this.files.Count);
+		string file = this.files[index];
+		Console.WriteLine(file);
+		return file;
+	}
+	public void RandomSelectOneImgToWallpaper() {
+		Wallpaper.SetWallPaper(RandomChoiceFromList());
 	}
 }
