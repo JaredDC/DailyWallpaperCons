@@ -72,7 +72,7 @@ public class Wallpaper
         System.IO.File.WriteAllBytes(destFile, convertedToBytes);
     }
 
-    public static void SetWallPaper(string wallpaper, Style style = Style.Fit)
+    public static void SetWallPaper(string wallpaper, Style style = Style.Fill)
     {
         using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true))
         {

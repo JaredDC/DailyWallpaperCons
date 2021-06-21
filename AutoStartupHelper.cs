@@ -50,7 +50,7 @@ namespace DailyWallpaper
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine($"Failed to delete QuickLook startup shortcut.{e.ToString()}");
+                Console.Error.WriteLine($"Failed to delete DailyWallpaper startup shortcut.{e.ToString()}");
             }
         }
 

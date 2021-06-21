@@ -1,10 +1,10 @@
 # SOMEFILES
-*.jpg
 .vs/
 bin/
 obj/
 packages/
 publish/
+samplePic/
 
 # Prerequisites
 *.d

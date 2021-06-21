@@ -9,8 +9,7 @@ using System.Reflection;
 using System.IO;
 
 namespace DailyWallpaper
-{
-    class ConfigIni
+{    public class ConfigIni
     {
         private string iniPath;
         private string exeName = Assembly.GetExecutingAssembly().GetName().Name;
@@ -70,7 +69,7 @@ namespace DailyWallpaper
             Write("alwaysdlBingWallpaper", "yes", "Online");
 
 
-            Write("imgDir", @"D:\jared\erotic\[Wanimal-Wallpaper]", "Local");
+            Write("imgDir", @"C:\Users\jared\Pictures\pic", "Local");
             Write("scan", "yes", "Local");
 
             Write("copyFolder", "None", "Local");
@@ -78,6 +77,7 @@ namespace DailyWallpaper
 
             Write("mTime", "NULL", "Local");
             Write("lastImgDir", "NULL", "Local");
+            // Write("lastImgDirmTime", "NULL", "Local");
             Write("wallpaper", "NULL", "Local");
         }
         public void RunAtStartup()
@@ -108,24 +108,13 @@ namespace DailyWallpaper
             }
         }
         
-        public void UpdateIniVolatileItem(string mTime=null,string lastImgDir=null, string wallpaper=null)
+        public void UpdateIniItem(string key=null,string value=null, string section="Local")
         {
-            if (!String.IsNullOrEmpty(mTime))
+            if (!String.IsNullOrEmpty(key) && !String.IsNullOrEmpty(value))
             {
-                Write("mTime", mTime, "Local");
-                Console.WriteLine($"update \"mTime\" -> \" {mTime} \"");
-            }
-                
-            if (!String.IsNullOrEmpty(lastImgDir)) {
-                Write("lastImgDir", lastImgDir, "Local");
-                Console.WriteLine($"update \"lastImgDir\" -> \" {lastImgDir} \"");
-            }
-                
-            if (!String.IsNullOrEmpty(wallpaper)) {
-                Write("wallpaper", wallpaper, "Local");
-                Console.WriteLine($"update \"wallpaper\" -> \" {wallpaper} \"");
-            }
-                
+                Write(key, value, section);
+                Console.WriteLine($"update \"{key}\" -> \" {value} \"");
+            }                
         }
         
         public Dictionary<string, string> GetCfgFromIni()
@@ -148,7 +137,10 @@ namespace DailyWallpaper
             iniDict.Add("scan", Read("scan", "Local"));
             iniDict.Add("copyFolder", Read("copyFolder", "Local"));
             iniDict.Add("want2Copy", Read("want2Copy", "Local"));
-            
+            iniDict.Add("mTime", Read("mTime", "Local"));
+            iniDict.Add("lastImgDir", Read("lastImgDir", "Local"));
+            // iniDict.Add("lastImgDirmTime", Read("lastImgDirmTime", "Local"));
+
             // print
             // PrintDict(iniDict);
             return iniDict;
