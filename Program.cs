@@ -9,36 +9,38 @@ namespace DailyWallpaper
 {
     class Program
     {
-        static void Main(string[] args)
+        static void MainSTD(string[] args)
         {
             // Console.OutputEncoding = Encoding.UTF8;
             DailyWallpaper();
         }
-        static void MainOUTPUT(string[] args)
+        static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            try
-            {
-                using (var writer = new StreamWriter("log.txt"))
-                {
-                    Console.SetOut(writer);
-                    Console.SetError(writer);
 
-                    //Console.Error.WriteLine("Error information written to begin");
-                    DailyWallpaper();
-                    //Console.Error.WriteLine("Error information written to TEST");
-                    Console.Out.Close();
-                    Console.Error.Close();
-                    writer.Close();
-                    // Console.SetOut(Console.OpenStandardOutput());
-                }
-            }
-            catch (IOException e)
+            string logFile = "log.txt";
+            Console.WriteLine($"Set stdoutput and stderr to file: {logFile}");
+            Console.WriteLine("Please be PATIENT, the result will not be lost.");           
+            Console.WriteLine("-----------");           
+            using (var writer = new StreamWriter(logFile))
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
-                return;
+                Console.SetOut(writer);
+                Console.SetError(writer);
+                //Console.Error.WriteLine("Error information written to begin");
+                try
+                {
+                    DailyWallpaper();
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine(e.ToString());
+                }
+                //Console.Error.WriteLine("Error information written to TEST");
+                Console.Out.Close();
+                Console.Error.Close();
+                writer.Close();
+                // Console.SetOut(Console.OpenStandardOutput());
             }
+            
             // redirect stderr to default.
             var standardError = new StreamWriter(Console.OpenStandardError());
             standardError.AutoFlush = true;
@@ -50,12 +52,11 @@ namespace DailyWallpaper
             Console.SetOut(standardOutput);
 
             // print the log file.
-            Console.WriteLine(File.ReadAllText("log.txt"));
-
-        }
-        static void MainSTDERR(string[] args)
-        {
             Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine(File.ReadAllText("log.txt"));
+        }
+        static void MainOUT(string[] args)
+        {
             try
             {
                 using (var writer = new StreamWriter("log.txt"))
@@ -82,7 +83,11 @@ namespace DailyWallpaper
             Console.SetOut(standardOutput);
 
             // print the log file.
-            Console.WriteLine(File.ReadAllText("log.txt"));
+            var log = File.ReadAllText("log.txt");
+            // Console.WriteLine(File.ReadAllText("log.txt", Encoding.UTF8));
+
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine(log);
 
         }
 
@@ -97,14 +102,15 @@ namespace DailyWallpaper
 
             // Creating a text file named "out" in D Drive
             var MyIni = new ConfigIni();
+            MyIni.RunAtStartup();
+
             var iniDict = MyIni.GetCfgFromIni();
             if (iniDict["useLocal"].ToLower().Equals("yes")) {
                 var localImage = new LocalImage(iniDict["imgDir"], MyIni);
                 localImage.RandomSelectOneImgToWallpaper();
             }
-           
+
             return true;
         }
-
     }
 }

@@ -67,7 +67,7 @@ namespace DailyWallpaper
 				} else {
 					var iniMtime = DateTime.Parse(ini.GetCfgFromIni()["mTime"]);
 					var mTime = new FileInfo(this.path).LastWriteTime;
-					var timeDiff = Math.Abs((int)(mTime - iniMtime).TotalSeconds);
+					var timeDiff = Math.Abs((int)(mTime - iniMtime).TotalDays);
 					Console.WriteLine($"timeDiff: {timeDiff} days.");
 					if (timeDiff == 0)
 					{
@@ -94,11 +94,11 @@ namespace DailyWallpaper
 			}
 			// && this.update != Update.CleanInvalid
 			if (File.Exists(this.txtFile)) {
-				if (this.old_files == null)
+				if (File.Exists(txtFile) && this.old_files == null)
 				{
 					this.old_files = Txt2List(checkExist: true);
 					if (this.update == Update.CleanInvalid)
-					{ 
+					{
 						ScanLocalPath();
 						return;
 					}
@@ -107,7 +107,7 @@ namespace DailyWallpaper
 			List<string> files = new List<string>();
 			foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
 			{
-				if (this.old_files.Contains(file)){
+				if (this.old_files != null && this.old_files.Contains(file)){
 					files.Add(file);
 					continue;
 				}
@@ -147,8 +147,6 @@ namespace DailyWallpaper
 				if (this.update != Update.NO)
 				{
 					File.WriteAllLines(this.txtFile, filelist);
-					
-					this.ini.UpdateIniItem("mTime", new FileInfo(this.path).LastWriteTime.ToString());
 					if (this.update == Update.FORCE)
 					{
 						Console.WriteLine("Created: {0}", this.txtFile);
@@ -162,6 +160,7 @@ namespace DailyWallpaper
 					{
 						Console.WriteLine("Updated: {0}", this.txtFile);
 					}
+					this.ini.UpdateIniItem("mTime", new FileInfo(this.path).LastWriteTime.ToString());
 					// update config.ini modified time.
 				}
 			}
