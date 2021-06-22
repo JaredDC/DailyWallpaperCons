@@ -14,7 +14,10 @@ namespace DailyWallpaper
             string baseUri = "https://www.bing.com";
             using (var client = new HttpClient())
             {
-                using (var jsonStream = await client.GetStreamAsync("http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US"))
+                // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&nc=1624379405485&pid=hp&FORM=BEHPTB&uhd=1&uhdwidth=2880&uhdheight=1620
+                // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&uhdwidth=2880&uhdheight=1620
+                // http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US
+                using (var jsonStream = await client.GetStreamAsync("https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&uhd=1&uhdwidth=2880&uhdheight=1620"))
                 {
                     var ser = new DataContractJsonSerializer(typeof(Result));
                     var res = (Result)ser.ReadObject(jsonStream);

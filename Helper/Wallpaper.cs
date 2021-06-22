@@ -43,7 +43,7 @@ public class Wallpaper
     {
         System.Drawing.Image bitmap = (System.Drawing.Image)Bitmap.FromFile(sourceFile); // set image     
         // Font font = new Font("Microsoft YaHei", 20, FontStyle.Regular, GraphicsUnit.Pixel);
-        int fontSize = 14;
+        int fontSize = 20;
         Font font = new Font("Microsoft YaHei", fontSize, FontStyle.Regular);
 
         //Color color = FromArgb(255, 255, 0, 0);
@@ -55,7 +55,7 @@ public class Wallpaper
         System.Console.WriteLine("GetHanNumFromString:" + GetHanNumFromString(waterMark));*/
         
         int wid = bitmap.Width - font_len * fontSize / 2 + 80;
-        int hei = bitmap.Height - fontSize - 50;
+        int hei = bitmap.Height - fontSize - 100;
         Point atpoint = new Point(wid, hei);
         System.Console.WriteLine("[" + wid +","+ hei + "]");
         System.Console.WriteLine("[" + bitmap.Width + ","+ bitmap.Height + "]");
