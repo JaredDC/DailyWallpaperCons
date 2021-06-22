@@ -67,15 +67,15 @@ namespace DailyWallpaper
 				} else {
 					var iniMtime = DateTime.Parse(ini.GetCfgFromIni()["mTime"]);
 					var mTime = new FileInfo(this.path).LastWriteTime;
-					var timeDiff = Math.Abs((int)(mTime - iniMtime).TotalDays);
-					Console.WriteLine($"timeDiff: {timeDiff} days.");
-					if (timeDiff == 0)
+					var timeDiff = Math.Abs((int)(mTime - iniMtime).TotalSeconds);
+					Console.WriteLine($"timeDiff: {timeDiff}s.");
+					if (timeDiff > 20)
 					{
-						return false;
+						return true; 
 					}
 					else
 					{
-						return true;
+						return false;
 					}
 				}
 			}
@@ -107,6 +107,7 @@ namespace DailyWallpaper
 			List<string> files = new List<string>();
 			foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
 			{
+				// Console.WriteLine($"file: {file}");
 				if (this.old_files != null && this.old_files.Contains(file)){
 					files.Add(file);
 					continue;
@@ -134,9 +135,9 @@ namespace DailyWallpaper
 				if (print) { Console.WriteLine("No suitable image files."); }
 			}
 			this.files = files;
-			List2Txt();
+			List2Txt(files, txtFile: txtFile);
 		}
-		public void List2Txt(List<string> filelist=null)
+		public void List2Txt(List<string> filelist=null, string txtFile=null)
 		{
 			if (filelist == null)
             {
@@ -146,19 +147,19 @@ namespace DailyWallpaper
 			{
 				if (this.update != Update.NO)
 				{
-					File.WriteAllLines(this.txtFile, filelist);
+					File.WriteAllLines(txtFile, filelist);
 					if (this.update == Update.FORCE)
 					{
-						Console.WriteLine("Created: {0}", this.txtFile);
+						Console.WriteLine("Created: {0}", txtFile);
 						
 					}
 					else if (this.update == Update.CleanInvalid)
 					{
-						Console.WriteLine("Clean Invalid files[{1:D}]: {0}", this.txtFile, this.invalidCnt);
+						Console.WriteLine("Clean Invalid files[{1:D}]: {0}", txtFile, this.invalidCnt);
 					}
 					else
 					{
-						Console.WriteLine("Updated: {0}", this.txtFile);
+						Console.WriteLine("Updated: {0}", txtFile);
 					}
 					this.ini.UpdateIniItem("mTime", new FileInfo(this.path).LastWriteTime.ToString());
 					// update config.ini modified time.
@@ -213,9 +214,51 @@ namespace DailyWallpaper
 				Console.WriteLine(file);
 			}
 		}
+		
+		private void CopyTo()
+        {
+			if (ini.GetCfgFromIni()["want2Copy"].ToLower().Equals("yes"))
+			{
+				var copyFolder = ini.GetCfgFromIni()["copyFolder"];
+				string existListTxt = Path.Combine(copyFolder, "_existing_file_list.txt");
+				bool firstCopy = true;
+				if (File.Exists(existListTxt))
+				{
+					firstCopy = false;
+				}
+				var existList = new List<string>();
+				if (!Directory.Exists(copyFolder))
+				{
+					Directory.CreateDirectory(copyFolder);
+					Console.WriteLine($"Created copyFolder: {copyFolder}");
+				}
+				foreach (var fi in this.files)
+				{
+					var newFi = Path.Combine(copyFolder, new FileInfo(fi).Name);
+					if (!File.Exists(newFi))
+					{
+						File.Copy(fi, newFi);
+						// Console.WriteLine($"Copied to: {newFi}");
+					}
+					else
+					{
+						if (firstCopy)
+						{
+							existList.Add(fi);
+							Console.WriteLine($"File exists: {newFi}");
+						}
+					}
+				}
+				if (existList.Count > 0)
+				{
+					File.WriteAllLines(existListTxt, existList);
+				}
+			}
+		}
 		private string RandomChoiceFromList()
 		{
 			ScanLocalPath();
+			CopyTo();
 			var random = new Random();
 			int index = random.Next(this.files.Count);
 			string file = this.files[index];
