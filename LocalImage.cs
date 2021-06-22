@@ -224,9 +224,9 @@ namespace DailyWallpaper
 		public void RandomSelectOneImgToWallpaper()
 		{
 			string wallpaper = RandomChoiceFromList();
-			ini.UpdateIniItem("wallpaper", wallpaper);
 			ini.UpdateIniItem("lastImgDir", this.path);
 			Wallpaper.SetWallPaper(wallpaper);
+			ini.UpdateIniItem("wallpaper", wallpaper + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
 		}
 	}
 }

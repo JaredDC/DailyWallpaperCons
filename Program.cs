@@ -16,10 +16,10 @@ namespace DailyWallpaper
         static void Main(string[] args)
         {
 
-            string logFile = "log.txt";
+            string logFile = new FileInfo("log.txt").FullName;
             Console.WriteLine($"Set stdoutput and stderr to file: {logFile}");
             Console.WriteLine("Please be PATIENT, the result will not be lost.");           
-            Console.WriteLine("-----------");           
+            Console.WriteLine($"------  {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}  ------");
             using (var writer = new StreamWriter(logFile))
             {
                 Console.SetOut(writer);

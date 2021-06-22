@@ -79,7 +79,7 @@ namespace DailyWallpaper
             Write("mTime", "NULL", "Local");
             Write("lastImgDir", "NULL", "Local");
             // Write("lastImgDirmTime", "NULL", "Local");
-            Write("wallpaper", "NULL", "Local");
+            Write("wallpaper", "NULL", "LOG");
         }
         
         private void PrintDict(Dictionary<string, string> dict)

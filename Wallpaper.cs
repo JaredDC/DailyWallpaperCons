@@ -16,7 +16,6 @@ public class Wallpaper
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
-
     public enum Style : int
     {
         Fill,

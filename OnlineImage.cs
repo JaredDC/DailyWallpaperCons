@@ -67,26 +67,29 @@ namespace DailyWallpaper
             {
                 BingChina(setWallpaper: false);
             }
-			string choice = onlineList[index];
+            string wallpaper;
+            string choice = onlineList[index];
 			choice = "dailySpotlight";
             Console.WriteLine($"-> The choice is: {choice}");
             switch (choice)
             {
                 case "bingChina":
-                    BingChina();
+                    wallpaper = BingChina();
                     break;
                 case "ngChina":
-                    NgChina();
+                    wallpaper = NgChina();
                     break;
             
                 case "dailySpotlight":
-                    DailySpotlight();
+                    wallpaper = DailySpotlight();
                     break;
                 default:
-                    BingChina();
+                    wallpaper = BingChina();
                     Console.WriteLine("Default.");
                     break;
             }
+            Wallpaper.SetWallPaper(wallpaper);
+            ini.UpdateIniItem("wallpaper", wallpaper + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
         }
         /*
          * Input: url
@@ -97,14 +100,14 @@ namespace DailyWallpaper
 
         }
 
-        public void BingChina(bool setWallpaper=true)
+        public string BingChina(bool setWallpaper=true)
         {
-
+            return "";
         }
 
-        public void NgChina()
+        public string NgChina()
         {
-
+            return "";
         }
 
 
@@ -150,7 +153,7 @@ namespace DailyWallpaper
             var dailySpotlightDir = assets[0];
             return dailySpotlightDir;
         }
-        public void DailySpotlight()
+        public string DailySpotlight()
         {
             string dailySpotlightDir = GetDailySpotlightDir();
             var jpegFiles = new List<FileInfo>();
@@ -210,7 +213,7 @@ namespace DailyWallpaper
                 }             
             }
             List <FileInfo> jpegFilesOrdered     = jpegFiles.OrderByDescending(x => x.CreationTime).ToList();
-            Wallpaper.SetWallPaper(wallpaperDict[jpegFilesOrdered[0].Name]);
+            return wallpaperDict[jpegFilesOrdered[0].Name];
         }      
     }
 }
