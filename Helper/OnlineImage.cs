@@ -70,7 +70,6 @@ namespace DailyWallpaper
             }
 
             string choice = onlineList[index];
-			choice = "bingChina";
             Console.WriteLine($"-> The choice is: {choice}");
             switch (choice)
             {
