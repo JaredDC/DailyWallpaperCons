@@ -80,7 +80,7 @@ namespace DailyWallpaper
                     if (!File.Exists(wallpaperWMK))
                     {
                         var oriImg = bingList[0];
-                        Wallpaper.AddWaterMark(oriImg, wallpaperWMK, copyRight);
+                        Wallpaper.AddWaterMark(oriImg, wallpaperWMK, copyRight, deleteSrc:true);
                     }
                     Wallpaper.SetWallPaper(wallpaperWMK);
                     ini.UpdateIniItem("wallpaper", wallpaperWMK + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
