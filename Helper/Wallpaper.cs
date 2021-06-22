@@ -78,7 +78,7 @@ public class Wallpaper
         }
     }
 
-    public static void SetWallPaper(string wallpaper, PicturePosition style = PicturePosition.Fill)
+    public static void SetWallPaper(string wallpaper=null, PicturePosition style = PicturePosition.Fill)
     {
         if (wallpaper == null)
         {

@@ -13,7 +13,6 @@ namespace DailyWallpaper
     {
         private ConfigIni ini;
         private string path;
-        private string wallpaperWMK;
 
         public OnlineImage(ConfigIni ini, string path = null)
         {
@@ -70,32 +69,24 @@ namespace DailyWallpaper
             }
 
             string choice = onlineList[index];
+            string wallpaper = null;
             Console.WriteLine($"-> The choice is: {choice}");
             switch (choice)
             {
                 case "bingChina":
-                    var bingList = await BingChina();
-                    var copyRight = bingList[1];
-                    Console.WriteLine(copyRight);
-                    if (!File.Exists(wallpaperWMK))
-                    {
-                        var oriImg = bingList[0];
-                        Wallpaper.AddWaterMark(oriImg, wallpaperWMK, copyRight, deleteSrc:true);
-                    }
-                    Wallpaper.SetWallPaper(wallpaperWMK);
-                    ini.UpdateIniItem("wallpaper", wallpaperWMK + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
+                    wallpaper = await BingChina(print:false);
                     break;
            
                 case "dailySpotlight":
-                    var wallpaper = DailySpotlight();
-                    Wallpaper.SetWallPaper(wallpaper);
-                    ini.UpdateIniItem("wallpaper", wallpaper + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
+                    wallpaper = DailySpotlight();
                     break;
 
                 default:
                     Console.WriteLine("Default.");
                     break;
             }
+            Wallpaper.SetWallPaper(wallpaper);
+            ini.UpdateIniItem("wallpaper", wallpaper + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
         }
         /*
          * Input: url
@@ -107,7 +98,7 @@ namespace DailyWallpaper
 
         }
 
-        public async Task<List<string>> BingChina()
+        public async Task<string> BingChina(bool print=true)
         {
             var bingImg = await new BingImageProvider().GetImage(check:true);
             // remove illegal characters
@@ -115,13 +106,19 @@ namespace DailyWallpaper
             // replace illegal characters with _
             var file_name = string.Join("_", bingImg.Copyright.Split(Path.GetInvalidFileNameChars()));
             string wallpaper = Path.Combine(path, file_name + ".jpg");
-            wallpaperWMK = Path.Combine(path, file_name + "-WMK.jpg");
+            var wallpaperWMK = Path.Combine(path, file_name + "-WMK.jpg");
+            if (print)
+            {
+                Console.WriteLine($"Downloading BingChina IMG: {bingImg.Copyright}");
+                Console.WriteLine($"Know more: {bingImg.CopyrightLink}");
+            }
             if (!File.Exists(wallpaperWMK)) {
                 // Don't download the picture again and again.
                 var img = await new BingImageProvider().GetImage(check:false);
                 img.Img.Save(wallpaper, System.Drawing.Imaging.ImageFormat.Jpeg);
-            }           
-            return new List<string> { wallpaper, bingImg.Copyright, bingImg.CopyrightLink };
+                Wallpaper.AddWaterMark(wallpaper, wallpaperWMK, bingImg.Copyright, deleteSrc: true);
+            }            
+            return wallpaperWMK;
         }
 
         public static void PrintAllSystemEnvironmentInfo()
