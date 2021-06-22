@@ -3,6 +3,9 @@ using System.Drawing;
 using Microsoft.Win32;
 using System.IO;
 using System.Text.RegularExpressions;
+using System;
+using System.Net;
+using System.Drawing.Imaging;
 
 public class Wallpaper
 {
@@ -112,5 +115,29 @@ public class Wallpaper
                 0,
                 wallpaper,
                 SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+    }
+    public static void DownLoadFromUrl(string dir, string name, string url)
+    {
+        string file = Path.Combine(dir, name);
+        if (File.Exists(file))
+        {
+            Console.WriteLine($"File already exists: {file}");
+            return;
+        }
+        using (WebClient webClient = new WebClient())
+        {
+            byte[] data = webClient.DownloadData(url);
+
+            using (MemoryStream mem = new MemoryStream(data))
+            {
+                using (var img = Image.FromStream(mem))
+                {
+                    // ImageFormat.Png
+                    img.Save(file, ImageFormat.Jpeg);
+                    Console.WriteLine($"File download succeed: {file}");
+                }
+            }
+
+        }
     }
 }

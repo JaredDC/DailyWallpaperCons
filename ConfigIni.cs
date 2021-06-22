@@ -12,7 +12,7 @@ namespace DailyWallpaper
 {    public class ConfigIni
     {
         private string iniPath;
-        private string exeName = Assembly.GetExecutingAssembly().GetName().Name;
+        public string exeName = Assembly.GetExecutingAssembly().GetName().Name;
 
         [DllImport("kernel32", CharSet = CharSet.Unicode)]
         static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
@@ -63,6 +63,7 @@ namespace DailyWallpaper
             Write("createUsageStat", "once", exeName);
             Write("want2AutoRun", "once", exeName);
 
+            Write("saveDir", "NULL", "Online");
             Write("ngChina", "no", "Online");
             Write("bingChina", "yes", "Online");
             Write("dailyDpotlight", "yes", "Online");
@@ -80,26 +81,7 @@ namespace DailyWallpaper
             // Write("lastImgDirmTime", "NULL", "Local");
             Write("wallpaper", "NULL", "Local");
         }
-        public void RunAtStartup()
-        {
-            // ConfigIni iniFile
-            string want2AutoRun = Read("want2AutoRun").ToLower();
-            if (want2AutoRun.Equals("yes") || want2AutoRun.Equals("once"))
-            {
-                AutoStartupHelper.CreateAutorunShortcut();
-                if (want2AutoRun.Equals("once")){
-                    Write("want2AutoRun", "yes/no");
-                }
-            } else if(want2AutoRun.Equals("no"))
-            {
-                if (!AutoStartupHelper.IsAutorun())
-                {
-                    return;
-                }
-                Console.WriteLine("You don't want this program run at Windows startup.");
-                AutoStartupHelper.RemoveAutorunShortcut();
-            }
-        }
+        
         private void PrintDict(Dictionary<string, string> dict)
         {
             foreach (string key in dict.Keys)
@@ -113,7 +95,7 @@ namespace DailyWallpaper
             if (!String.IsNullOrEmpty(key) && !String.IsNullOrEmpty(value))
             {
                 Write(key, value, section);
-                Console.WriteLine($"update \"{key}\" -> \" {value} \"");
+                Console.WriteLine($"update \"{key}\" -> \"{value}\"");
             }                
         }
         

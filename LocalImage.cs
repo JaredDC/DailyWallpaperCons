@@ -14,7 +14,7 @@ namespace DailyWallpaper
 		private int invalidCnt = 0;
 		private ConfigIni ini;
 		private string scan;
-		private readonly string timeFormat = "yyyy-MM-dd HH:mm:ss";
+		// private readonly string timeFormat = "yyyy-MM-dd HH:mm:ss";
 		private string txtFile;
 		private List<string> old_files;
 		public enum Update : int
@@ -27,7 +27,7 @@ namespace DailyWallpaper
 		}
 		private Update update = Update.UNKNOWN;
 		
-		public LocalImage(string path, ConfigIni ini)
+		public LocalImage(ConfigIni ini, string path)
 		{
 			this.path = path;
 			this.ini = ini;

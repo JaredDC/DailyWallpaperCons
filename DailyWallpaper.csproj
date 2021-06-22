@@ -107,8 +107,8 @@
   <ItemGroup>
     <Compile Include="AutoStartupHelper.cs" />
     <Compile Include="ConfigIni.cs" />
-    <Compile Include="DownLoad.cs" />
     <Compile Include="LocalImage.cs" />
+    <Compile Include="OnlineImage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wallpaper.cs" />
