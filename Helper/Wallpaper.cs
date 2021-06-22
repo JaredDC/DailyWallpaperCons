@@ -9,14 +9,12 @@ using System.Drawing.Imaging;
 
 public class Wallpaper
 {
-    const int SPI_SETDESKWALLPAPER = 20;
-    const int SPIF_UPDATEINIFILE = 0x01;
-    const int SPIF_SENDWININICHANGE = 0x02;
+    
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
-    public enum Style : int
+    public enum PicturePosition
     {
         Fill,
         Fit,
@@ -41,11 +39,11 @@ public class Wallpaper
 
         return count;
     }
-    public static void AddWaterMark(string sourceFile, string destFile, string waterMark)
+    public static void AddWaterMark(string sourceFile, string destFile, string waterMark, bool deleteSrc=false)
     {
         System.Drawing.Image bitmap = (System.Drawing.Image)Bitmap.FromFile(sourceFile); // set image     
         // Font font = new Font("Microsoft YaHei", 20, FontStyle.Regular, GraphicsUnit.Pixel);
-        int fontSize = 18;
+        int fontSize = 14;
         Font font = new Font("Microsoft YaHei", fontSize, FontStyle.Regular);
 
         //Color color = FromArgb(255, 255, 0, 0);
@@ -56,7 +54,7 @@ public class Wallpaper
         System.Console.WriteLine("font_len:" + font_len);
         System.Console.WriteLine("GetHanNumFromString:" + GetHanNumFromString(waterMark));*/
         
-        int wid = bitmap.Width - font_len * fontSize / 2 + 50;
+        int wid = bitmap.Width - font_len * fontSize / 2 + 80;
         int hei = bitmap.Height - fontSize - 50;
         Point atpoint = new Point(wid, hei);
         System.Console.WriteLine("[" + wid +","+ hei + "]");
@@ -72,44 +70,55 @@ public class Wallpaper
         bitmap.Save(m, System.Drawing.Imaging.ImageFormat.Jpeg);
         byte[] convertedToBytes = m.ToArray();
         System.IO.File.WriteAllBytes(destFile, convertedToBytes);
+        if (deleteSrc)
+        {
+            File.Delete(sourceFile);
+        }
     }
 
-    public static void SetWallPaper(string wallpaper, Style style = Style.Fill)
+    public static void SetWallPaper(string wallpaper, PicturePosition style = PicturePosition.Fill)
     {
+        if (wallpaper == null)
+        {
+            throw new ArgumentNullException(nameof(wallpaper));
+        }
         using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true))
         {
-            if (style == Style.Fill)
+            if (style == PicturePosition.Fill)
             {
-                key.SetValue(@"WallpaperStyle", 10.ToString());
-                key.SetValue(@"TileWallpaper", 0.ToString());
+                key.SetValue(@"WallpaperStyle", "10");
+                key.SetValue(@"TileWallpaper", "0");
             }
-            if (style == Style.Fit)
+            if (style == PicturePosition.Fit)
             {
-                key.SetValue(@"WallpaperStyle", 6.ToString());
-                key.SetValue(@"TileWallpaper", 0.ToString());
+                key.SetValue(@"WallpaperStyle", "6");
+                key.SetValue(@"TileWallpaper", "0");
             }
-            if (style == Style.Span) // Windows 8 or newer only!
+            if (style == PicturePosition.Span) // Windows 8 or newer only!
             {
-                key.SetValue(@"WallpaperStyle", 22.ToString());
-                key.SetValue(@"TileWallpaper", 0.ToString());
+                key.SetValue(@"WallpaperStyle", "22");
+                key.SetValue(@"TileWallpaper", "0");
             }
-            if (style == Style.Stretch)
+            if (style == PicturePosition.Stretch)
             {
-                key.SetValue(@"WallpaperStyle", 2.ToString());
-                key.SetValue(@"TileWallpaper", 0.ToString());
+                key.SetValue(@"WallpaperStyle", "2");
+                key.SetValue(@"TileWallpaper", "0");
             }
-            if (style == Style.Tile)
+            if (style == PicturePosition.Tile)
             {
-                key.SetValue(@"WallpaperStyle", 0.ToString());
-                key.SetValue(@"TileWallpaper", 1.ToString());
+                key.SetValue(@"WallpaperStyle", "0");
+                key.SetValue(@"TileWallpaper", "1");
             }
-            if (style == Style.Center)
+            if (style == PicturePosition.Center)
             {
-                key.SetValue(@"WallpaperStyle", 0.ToString());
-                key.SetValue(@"TileWallpaper", 0.ToString());
+                key.SetValue(@"WallpaperStyle", "0");
+                key.SetValue(@"TileWallpaper", "0");
             }
         }
-        Console.WriteLine($"Setted {new FileInfo(wallpaper).Name} as Wallpaper.");
+        // Console.WriteLine($"Setted {new FileInfo(wallpaper).Name} as Wallpaper.");
+        const int SPI_SETDESKWALLPAPER = 20;
+        const int SPIF_UPDATEINIFILE = 0x01;
+        const int SPIF_SENDWININICHANGE = 0x02;
         SystemParametersInfo(SPI_SETDESKWALLPAPER,
                 0,
                 wallpaper,

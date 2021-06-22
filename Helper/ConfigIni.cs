@@ -64,9 +64,8 @@ namespace DailyWallpaper
             Write("want2AutoRun", "once", exeName);
 
             Write("saveDir", "NULL", "Online");
-            Write("ngChina", "no", "Online");
             Write("bingChina", "yes", "Online");
-            Write("alwaysdlBingWallpaper", "yes", "Online");
+            Write("alwaysDLBingWallpaper", "yes", "Online");
             Write("dailySpotlight", "yes", "Online");
             Write("dailySpotlightDir", "AUTO", "Online");
 
@@ -110,11 +109,10 @@ namespace DailyWallpaper
             iniDict.Add("want2AutoRun", Read("want2AutoRun", exeName));
 
             // online
-            iniDict.Add("ngChina", Read("ngChina", "Online"));
             iniDict.Add("bingChina", Read("bingChina", "Online"));
             iniDict.Add("dailySpotlight", Read("dailySpotlight", "Online"));
             iniDict.Add("dailySpotlightDir", Read("dailySpotlightDir", "Online"));
-            iniDict.Add("alwaysdlBingWallpaper", Read("alwaysdlBingWallpaper", "Online"));
+            iniDict.Add("alwaysDLBingWallpaper", Read("alwaysDLBingWallpaper", "Online"));
             
             iniDict.Add("imgDir", Read("imgDir", "Local"));
             iniDict.Add("scan", Read("scan", "Local"));

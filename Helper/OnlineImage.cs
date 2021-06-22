@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DailyWallpaper
@@ -12,6 +13,7 @@ namespace DailyWallpaper
     {
         private ConfigIni ini;
         private string path;
+        private string wallpaperWMK;
 
         public OnlineImage(ConfigIni ini, string path = null)
         {
@@ -39,18 +41,17 @@ namespace DailyWallpaper
             
 
         }
-        
-        public void RandomChoiceFromList()
+
+        public async Task RandomChoiceFromList()
 		{
             // online
             var iniDict = new Dictionary<string, string>();
-            iniDict.Add("ngChina", this.ini.Read("ngChina", "Online"));
             iniDict.Add("bingChina", this.ini.Read("bingChina", "Online"));
             iniDict.Add("dailySpotlight", this.ini.Read("dailySpotlight", "Online"));
-            bool alwaysdlBingWallpaper = false;
-            if (this.ini.Read("alwaysdlBingWallpaper", "Online").ToLower().Equals("yes"))
+            bool alwaysDLBingWallpaper = false;
+            if (this.ini.Read("alwaysDLBingWallpaper", "Online").ToLower().Equals("yes"))
             {
-                alwaysdlBingWallpaper = true;
+                alwaysDLBingWallpaper = true;
             }
 
             var onlineList = new List<string>();
@@ -63,53 +64,66 @@ namespace DailyWallpaper
             }
             var random = new Random();
 			int index = random.Next(onlineList.Count);
-            if (alwaysdlBingWallpaper)
+            if (alwaysDLBingWallpaper)
             {
-                BingChina(setWallpaper: false);
+                await BingChina();
             }
-            string wallpaper;
+
             string choice = onlineList[index];
-			choice = "dailySpotlight";
+			choice = "bingChina";
             Console.WriteLine($"-> The choice is: {choice}");
             switch (choice)
             {
                 case "bingChina":
-                    wallpaper = BingChina();
+                    var bingList = await BingChina();
+                    var copyRight = bingList[1];
+                    Console.WriteLine(copyRight);
+                    if (!File.Exists(wallpaperWMK))
+                    {
+                        var oriImg = bingList[0];
+                        Wallpaper.AddWaterMark(oriImg, wallpaperWMK, copyRight);
+                    }
+                    Wallpaper.SetWallPaper(wallpaperWMK);
+                    ini.UpdateIniItem("wallpaper", wallpaperWMK + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
                     break;
-                case "ngChina":
-                    wallpaper = NgChina();
-                    break;
-            
+           
                 case "dailySpotlight":
-                    wallpaper = DailySpotlight();
+                    var wallpaper = DailySpotlight();
+                    Wallpaper.SetWallPaper(wallpaper);
+                    ini.UpdateIniItem("wallpaper", wallpaper + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
                     break;
+
                 default:
-                    wallpaper = BingChina();
                     Console.WriteLine("Default.");
                     break;
             }
-            Wallpaper.SetWallPaper(wallpaper);
-            ini.UpdateIniItem("wallpaper", wallpaper + "    " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "LOG");
         }
         /*
          * Input: url
          * Return: img-url, img_name
          */
+
         public void WebCrawler(string url)
         {
 
         }
 
-        public string BingChina(bool setWallpaper=true)
+        public async Task<List<string>> BingChina()
         {
-            return "";
+            var bingImg = await new BingImageProvider().GetImage(check:true);
+            // remove illegal characters
+            // var file_name = string.Concat(filename.Split(Path.GetInvalidFileNameChars()));
+            // replace illegal characters with _
+            var file_name = string.Join("_", bingImg.Copyright.Split(Path.GetInvalidFileNameChars()));
+            string wallpaper = Path.Combine(path, file_name + ".jpg");
+            wallpaperWMK = Path.Combine(path, file_name + "-WMK.jpg");
+            if (!File.Exists(wallpaperWMK)) {
+                // Don't download the picture again and again.
+                var img = await new BingImageProvider().GetImage(check:false);
+                img.Img.Save(wallpaper, System.Drawing.Imaging.ImageFormat.Jpeg);
+            }           
+            return new List<string> { wallpaper, bingImg.Copyright, bingImg.CopyrightLink };
         }
-
-        public string NgChina()
-        {
-            return "";
-        }
-
 
         public static void PrintAllSystemEnvironmentInfo()
     {

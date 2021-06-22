@@ -9,11 +9,11 @@ namespace DailyWallpaper
 {
     class Program
     {
-        static void MainSTD(string[] args)
+        static async Task MainSTD(string[] args)
         {
-            DailyWallpaper();
+            await DailyWallpaper();
         }
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             string logFile = new FileInfo("log.txt").FullName;
@@ -27,7 +27,7 @@ namespace DailyWallpaper
                 //Console.Error.WriteLine("Error information written to begin");
                 try
                 {
-                    DailyWallpaper();
+                    await DailyWallpaper();
                 }
                 catch (Exception e)
                 {
@@ -57,7 +57,7 @@ namespace DailyWallpaper
 
         /*TODO*/
         // generate single file excutable
-        private static bool DailyWallpaper()
+        private async static Task DailyWallpaper()
         {
             var iniFile = new ConfigIni();           
             RunAtStartup(iniFile);
@@ -69,9 +69,8 @@ namespace DailyWallpaper
             } else if (iniDict["useOnline"].ToLower().Equals("yes"))
             {
                 var onlineImage = new OnlineImage(iniFile);
-                onlineImage.RandomChoiceFromList();
+                await onlineImage.RandomChoiceFromList();
             }             
-            return true;
         }
 
         public static void RunAtStartup(ConfigIni ini)
