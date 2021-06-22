@@ -110,7 +110,7 @@ public class Wallpaper
                 key.SetValue(@"TileWallpaper", 0.ToString());
             }
         }
-
+        Console.WriteLine($"Setted {new FileInfo(wallpaper).Name} as Wallpaper.");
         SystemParametersInfo(SPI_SETDESKWALLPAPER,
                 0,
                 wallpaper,

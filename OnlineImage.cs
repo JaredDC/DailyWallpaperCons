@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -152,14 +153,64 @@ namespace DailyWallpaper
         public void DailySpotlight()
         {
             string dailySpotlightDir = GetDailySpotlightDir();
-            foreach(string file in Directory.GetFiles(dailySpotlightDir, "*", SearchOption.AllDirectories))
+            var jpegFiles = new List<FileInfo>();
+            var wallpaperDict = new Dictionary<string, string>();
+            foreach (string file in Directory.GetFiles(dailySpotlightDir, "*", SearchOption.AllDirectories))
             {
-                Console.WriteLine(file);
+                /*try { 
+                    System.Drawing.Image imgInput = System.Drawing.Image.FromFile(file);
+                    System.Drawing.Graphics gInput = System.Drawing.Graphics.FromImage(imgInput);
+                    System.Drawing.Imaging.ImageFormat thisFormat = imgInput.RawFormat;
+                    Console.WriteLine("It is image");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("It is not image");
+                }*/
+
+                long length = new FileInfo(file).Length / 1024;
+                if (length > 100)
+                {
+                   /* Bitmap img = new Bitmap(file);
+                    Console.WriteLine(img.RawFormat.ToString());
+                    img.Dispose();*/
+
+                    Image img = Image.FromFile(file);
+                    if (System.Drawing.Imaging.ImageFormat.Jpeg.Equals(img.RawFormat))
+                    {
+                        if (img.Width > 1900 && (img.Width + 0.0 / img.Height > 1.4))
+                        {
+                            var jpegfi = new FileInfo(file);
+                            jpegFiles.Add(jpegfi);
+                            var dest = Path.Combine(path, jpegfi.CreationTime.ToString("yyyy-MMdd_HH-mm-ss") + ".jpeg");
+                            wallpaperDict.Add(jpegfi.Name, dest);
+                            if (!File.Exists(dest))
+                            {
+                                jpegfi.CopyTo(dest);
+                                Console.WriteLine($"copy to: {dest}");
+                            }
+                            // 
+                        }
+                        else
+                        {        
+                            var jpegPhone = new FileInfo(file);
+                            var dest = Path.Combine(path, jpegPhone.CreationTime.ToString("yyyy-MMdd_HH-mm-ss") + "-Phone.jpeg");
+                            if (!File.Exists(dest))
+                            {
+                                jpegPhone.CopyTo(dest);
+                                Console.WriteLine($"copy to: {dest}");
+                            }
+                        }
+                    } else if (System.Drawing.Imaging.ImageFormat.Png.Equals(img.RawFormat))
+                    {
+                        Console.WriteLine("PNG: abandon");
+                        
+                    }                   
+                    img.Dispose();
+                }             
             }
-
-
-
-
-        }
+            List <FileInfo> jpegFilesOrdered     = jpegFiles.OrderByDescending(x => x.CreationTime).ToList();
+            Wallpaper.SetWallPaper(wallpaperDict[jpegFilesOrdered[0].Name]);
+        }      
     }
 }
