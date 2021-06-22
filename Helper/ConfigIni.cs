@@ -58,8 +58,8 @@ namespace DailyWallpaper
 
         public void CreateDefIni()
         {
-            Write("useLocal", "yes", exeName);
-            Write("useOnline", "no", exeName);
+            Write("useLocal", "no", exeName);
+            Write("useOnline", "yes", exeName);
             Write("createUsageStat", "once", exeName);
             Write("want2AutoRun", "once", exeName);
 
@@ -69,7 +69,8 @@ namespace DailyWallpaper
             Write("dailySpotlight", "yes", "Online");
             Write("dailySpotlightDir", "AUTO", "Online");
 
-            Write("imgDir", @"C:\Users\jared\Pictures\pic", "Local");
+            var myPictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            Write("imgDir", myPictures, "Local");
             Write("scan", "yes", "Local");
 
             Write("copyFolder", "None", "Local");
