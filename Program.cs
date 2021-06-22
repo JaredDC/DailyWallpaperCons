@@ -59,28 +59,18 @@ namespace DailyWallpaper
         // generate single file excutable
         private static bool DailyWallpaper()
         {
-
-            var iniFile = new ConfigIni();
-            
+            var iniFile = new ConfigIni();           
             RunAtStartup(iniFile);
             CreateUsageText(iniFile, "USAGE.TXT");
-            
             var iniDict = iniFile.GetCfgFromIni();
             if (iniDict["useLocal"].ToLower().Equals("yes")) {
                 var localImage = new LocalImage(iniFile, iniDict["imgDir"]);
                 localImage.RandomSelectOneImgToWallpaper();
             } else if (iniDict["useOnline"].ToLower().Equals("yes"))
             {
-                //var localImage = new OnlineImage(iniDict["imgDir"], MyIni);
-                //localImage.RandomSelectOneImgToWallpaper();
                 var onlineImage = new OnlineImage(iniFile);
                 onlineImage.RandomChoiceFromList();
-                // Wallpaper.DownLoadFromUrl(@"d:\jared", "happy.jpeg", "https://www.baidu.com/img/flexible/logo/pc/result.png");
-            }
-            
-            
-            
-              
+            }             
             return true;
         }
 
