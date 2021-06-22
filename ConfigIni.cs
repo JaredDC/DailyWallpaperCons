@@ -66,9 +66,9 @@ namespace DailyWallpaper
             Write("saveDir", "NULL", "Online");
             Write("ngChina", "no", "Online");
             Write("bingChina", "yes", "Online");
-            Write("dailyDpotlight", "yes", "Online");
             Write("alwaysdlBingWallpaper", "yes", "Online");
-
+            Write("dailySpotlight", "yes", "Online");
+            Write("dailySpotlightDir", "AUTO", "Online");
 
             Write("imgDir", @"C:\Users\jared\Pictures\pic", "Local");
             Write("scan", "yes", "Local");
@@ -112,7 +112,8 @@ namespace DailyWallpaper
             // online
             iniDict.Add("ngChina", Read("ngChina", "Online"));
             iniDict.Add("bingChina", Read("bingChina", "Online"));
-            iniDict.Add("dailyDpotlight", Read("dailyDpotlight", "Online"));
+            iniDict.Add("dailySpotlight", Read("dailySpotlight", "Online"));
+            iniDict.Add("dailySpotlightDir", Read("dailySpotlightDir", "Online"));
             iniDict.Add("alwaysdlBingWallpaper", Read("alwaysdlBingWallpaper", "Online"));
             
             iniDict.Add("imgDir", Read("imgDir", "Local"));

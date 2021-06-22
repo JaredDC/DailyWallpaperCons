@@ -11,11 +11,9 @@ namespace DailyWallpaper
     {
         private ConfigIni ini;
         private string path;
-        private Dictionary<string, string> iniDict;
-        private bool alwaysdlBingWallpaper = false;
 
-
-        public OnlineImage(ConfigIni ini, string path=null) {
+        public OnlineImage(ConfigIni ini, string path = null)
+        {
             this.ini = ini;
             this.path = path;
             if (String.IsNullOrEmpty(path))
@@ -37,27 +35,57 @@ namespace DailyWallpaper
             {
                 Directory.CreateDirectory(this.path);
             }
-            // online
-            iniDict = new Dictionary<string, string>();
             
+
+        }
+        
+        public void RandomChoiceFromList()
+		{
+            // online
+            var iniDict = new Dictionary<string, string>();
             iniDict.Add("ngChina", this.ini.Read("ngChina", "Online"));
             iniDict.Add("bingChina", this.ini.Read("bingChina", "Online"));
-            iniDict.Add("dailyDpotlight", this.ini.Read("dailyDpotlight", "Online"));
+            iniDict.Add("dailySpotlight", this.ini.Read("dailySpotlight", "Online"));
+            bool alwaysdlBingWallpaper = false;
             if (this.ini.Read("alwaysdlBingWallpaper", "Online").ToLower().Equals("yes"))
             {
                 alwaysdlBingWallpaper = true;
             }
-            // iniDict.Add("alwaysdlBingWallpaper", );
+
             var onlineList = new List<string>();
             foreach (string key in iniDict.Keys)
             {
                 if (this.ini.Read(key, "Online").ToLower().Equals("yes"))
                 {
                     onlineList.Add(key);
-                    Console.WriteLine(key);
                 }
             }
-
+            var random = new Random();
+			int index = random.Next(onlineList.Count);
+            if (alwaysdlBingWallpaper)
+            {
+                BingChina(setWallpaper: false);
+            }
+			string choice = onlineList[index];
+			choice = "dailySpotlight";
+            Console.WriteLine($"-> The choice is: {choice}");
+            switch (choice)
+            {
+                case "bingChina":
+                    BingChina();
+                    break;
+                case "ngChina":
+                    NgChina();
+                    break;
+            
+                case "dailySpotlight":
+                    DailySpotlight();
+                    break;
+                default:
+                    BingChina();
+                    Console.WriteLine("Default.");
+                    break;
+            }
         }
         /*
          * Input: url
@@ -68,7 +96,7 @@ namespace DailyWallpaper
 
         }
 
-        public void BingChina()
+        public void BingChina(bool setWallpaper=true)
         {
 
         }
@@ -78,8 +106,59 @@ namespace DailyWallpaper
 
         }
 
-        public void DailyDpotlight()
+
+        public static void PrintAllSystemEnvironmentInfo()
+    {
+            foreach (System.Collections.DictionaryEntry e in System.Environment.GetEnvironmentVariables())
+            {
+                Console.WriteLine(e.Key + ":" + e.Value);
+            }
+        }
+        private string GetDailySpotlightDir()
         {
+            if (!ini.GetCfgFromIni()["dailySpotlightDir"].ToLower().Equals("auto"))
+            {
+                var dir = ini.GetCfgFromIni()["dailySpotlightDir"];
+                if (!Directory.Exists(dir)) {
+                    throw new DirectoryNotFoundException($"dailySpotlightDir invalid: {dir}");
+                }
+                return dir;
+            }
+            var exception = new Exception("ERROR: it should be ONE dailySpotlightDir, tell me what to do next.\r\n" +
+                    "The sample path is: " +
+                    @"C:\Users\jared\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets" + Environment.NewLine+
+                    "\r\nFIRST OF ALL: \r\n    Turn on dailySpotlight feature in Windows 10 by \r\n" +
+                    "  Google/Baidu \"How to enable Windows Spotlight?\" \r\n\r\n" +
+                    "You can specify the PATH in the config.ini by:\r\n" +
+                    @"  dailySpotlightDir=C:\your_path" + "\r\n\r\n" + 
+                    "Or turn off dailySpotlight feature by:\r\n" +
+                    "  dailySpotlight=no\r\n"
+                    ); 
+            string LOCALAPPDATA = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var pkg = Path.Combine(LOCALAPPDATA, "Packages");
+            var contentDeliveryManager = Directory.GetDirectories(pkg, "*ContentDeliveryManager*", SearchOption.AllDirectories);
+            if (!contentDeliveryManager.Length.Equals(1))
+            {
+                throw exception;
+            } 
+            var assets = Directory.GetDirectories(contentDeliveryManager[0], "Assets", SearchOption.AllDirectories);
+            if (!assets.Length.Equals(1))
+            {
+                throw exception;
+            }
+            var dailySpotlightDir = assets[0];
+            return dailySpotlightDir;
+        }
+        public void DailySpotlight()
+        {
+            string dailySpotlightDir = GetDailySpotlightDir();
+            foreach(string file in Directory.GetFiles(dailySpotlightDir, "*", SearchOption.AllDirectories))
+            {
+                Console.WriteLine(file);
+            }
+
+
+
 
         }
     }

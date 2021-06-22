@@ -74,7 +74,8 @@ namespace DailyWallpaper
                 //var localImage = new OnlineImage(iniDict["imgDir"], MyIni);
                 //localImage.RandomSelectOneImgToWallpaper();
                 var onlineImage = new OnlineImage(iniFile);
-                Wallpaper.DownLoadFromUrl(@"d:\jared", "happy.jpeg", "https://www.baidu.com/img/flexible/logo/pc/result.png");
+                onlineImage.RandomChoiceFromList();
+                // Wallpaper.DownLoadFromUrl(@"d:\jared", "happy.jpeg", "https://www.baidu.com/img/flexible/logo/pc/result.png");
             }
             
             
