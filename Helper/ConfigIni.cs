@@ -72,7 +72,7 @@ namespace DailyWallpaper
 
             var myPictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
             Write("imgDir", myPictures, "Local");
-            Write("scan", "yes", "Local");
+            Write("scan", "AUTO", "Local");
 
             Write("copyFolder", "None", "Local");
             Write("want2Copy", "no", "Local");

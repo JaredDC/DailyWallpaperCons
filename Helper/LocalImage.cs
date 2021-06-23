@@ -19,7 +19,7 @@ namespace DailyWallpaper
 		private List<string> old_files;
 		public enum Update : int
 		{
-			YES,
+			AUTO,
 			NO,
 			FORCE,
 			CleanInvalid,
@@ -32,8 +32,8 @@ namespace DailyWallpaper
 			this.path = path;
 			this.ini = ini;
 			this.scan = ini.GetCfgFromIni()["scan"];
-			if (this.scan.ToLower().Equals("yes")) {
-				this.update = LocalImage.Update.YES;
+			if (this.scan.ToLower().Equals("auto")) {
+				this.update = LocalImage.Update.AUTO;
 			} else if (this.scan.ToLower().Equals("no"))
             {
 				this.update = LocalImage.Update.NO;
